@@ -4,10 +4,6 @@ const client = mqtt.connect('ws://bingring.leaferx.ink:8083/mqtt', {
   clean: false,
 });
 
-const aliveTimer = setInterval(() => {
-  client.publish('alive', '1');
-}, 3000);
-
 const alarmTimer = setInterval(() => {
   client.publish('alarm_status', '2');
   client.publish('alarm_data', String(Math.random()*30+80) + ',' + String(Math.random()*2 + 25));
@@ -19,5 +15,6 @@ client.on('message', (topic, payload) => {
   if (topic === 'reset_alarm') {
     clearInterval(alarmTimer);
     client.publish('alarm_status', '0');
+    client.end();
   }
 });
